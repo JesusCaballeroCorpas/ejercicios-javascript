@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="author" content="Jesús Caballero">
+		<title>Ejercicio 4 DOM HTML</title>
+		<script>
+        //Use HTML DOM to change the value of the input's value attribute to "Goodbye".
+        // Añadir un boton que diga cambiar y que cambie el value de el input type text
+        window.onload = function(){
+            document.getElementById("boton").onclick=cambiar;
+        }
+        function cambiar(){
+            document.getElementById("myText").value="Goodbye";
+        }
+        </script>
+	</head>
+	
+	<body>
+	    
+        <input type="text" id="myText" value="Hello">
+        <input type="button" id="boton" value="Cambiar">
+	</body>
+	
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejemplo de String length</title>
+
+   </head>
+   <script>
+    function mostrar(elem){
+        var longitud = elem.value.length;
+        document.getElementById("numero" + elem.id).innerHTML=longitud;
+    }
+    
+    </script> 
+<body>
+    Nombre: <input type="text" id="nombre" onkeyup="mostrar(this)">
+    Longitud del Nombre: <span id="numeronombre">0</span><br>
+    Apellidos: <input type="text" id="apellidos" onkeyup="mostrar(this)">
+    Longitud del Apellido: <span id="numeroapellidos">0</span><br>
+</body>
+</html>

@@ -1,0 +1,17 @@
+
+#contenedor{
+    width: 500px;
+    height: 500px;
+    margin: 0 auto;
+}
+#contenedor div{
+    width: 32%;
+    height: 32%;
+    float: left;
+    border: 1px solid black;
+}
+button{
+    clear: both;
+    display: block;
+    margin: 0 auto;
+}

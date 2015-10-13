@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<!--
+-Boton llenar llena la pecera
+-Boton pez crea una capa en un sitio aleatorio
+y si pulso en el lo selecciono y me pone el numero de pez y la comida que lleva tomada
+-Boton comida crea bolitas que llegan hasta el fondo poco a poco.
+Si selecciono un pez y pulso en una capa de comida, la capa de comida se elimina y aumenta en ese pez lo que se ha comido.
+-->
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Jesús Caballero Corpas">
+    <title>Acuario Interactivo</title>
+	
+	<style>
+        #pecera{
+            position: absolute;
+            width: 600px;
+            height: 400px;
+            border:5px solid black;
+            border-width: 0px 5px 5px 5px;
+            top: 100px;
+        }
+        #agua{
+            position:absolute;
+            width: 600px;
+            height: 0px;
+            background-color: aquamarine;
+            bottom:0px;
+        }
+        img{
+            width: 100px;
+        }
+        .pez{
+            position: absolute;
+            width: 100px;
+            height: 69px;
+            //bottom: 310px;
+            //left: 500px;
+            background-image: url(images/pez1.png);
+            
+        }
+        .comida{
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            //top: 350px;
+            //left: 550px;
+            border-radius: 50%;
+        }
+    </style>
+    
+    <script>
+        var pecera = document.getElementById("pecera");
+        var nivelagua = 0;
+        var idpez = 1;
+        var idcomida = 1;
+        //Funcion para llenar la pecera
+        function llenapecera(){
+            nivelagua++;
+            if(nivelagua < 390){
+              document.getElementById("agua").style.height = nivelagua + "px";
+              setTimeout("llenapecera()",10);
+            }
+        }
+        
+        //Funcion para crear un pez
+        function creapez(){
+            //Compruebo que la pecera este llena de agua.
+            if(nivelagua == 390){
+                //Creo un nuevo pez y le doy su clase, su id y le pongo el value a 0
+                //para contar la comida que se va a tomar.
+                var peznuevo = document.createElement("div");
+                peznuevo.className = "pez";
+                peznuevo.id = "pez" + idpez;
+                idpez++;
+                peznuevo.value = 0;
+                
+                //Creo una foto de pez aleatoria
+                var fotopez = Math.floor(Math.random()*5)+1;
+                peznuevo.style.backgroundImage = "url('images/pez" + fotopez + ".png')";
+                
+                //Le asigno posiciones aleatorias dentro de la pecera.
+                var posicion1 = Math.floor(Math.random()*310);
+                peznuevo.style.bottom = posicion1 + "px";
+                var posicion2 = Math.floor(Math.random()*500);
+                peznuevo.style.left = posicion2 + "px";
+                
+                //Llamo a la funcion seleccionapez.
+                peznuevo.setAttribute("onclick","seleccionapez(this)");
+                
+                //Añado el nuevo pez a la pecera
+                document.getElementById("pecera").appendChild(peznuevo);
+            }
+        }
+        
+        //Función para seleccionar un pez.
+        function seleccionapez(pez){
+            document.getElementById("numeropez").innerHTML = pez.id;
+            document.getElementById("numcomida").innerHTML = "Comida: " + pez.value;
+        }
+        
+        //Funcion crear comida
+        function creacomida(){
+            //Si la pecera esta llena dejo crear comida.
+            if(nivelagua == 390){
+                //Creo una bolita de comida y le doy una clase y una id.
+                var nuevacomida = document.createElement("div");
+                nuevacomida.className = "comida";
+                nuevacomida.id = "comida" + idcomida;
+                idcomida++;
+                
+                //Creo una posición aleatoria en el borde de la pecera
+                var posicioncomida = Math.floor(Math.random()*550);
+                nuevacomida.style.left = posicioncomida + "px";
+                
+                //Creamos los 3 colores y se lo ponemos a la capa comida
+                var color1 = Math.floor(Math.random()*255);
+                var color2 = Math.floor(Math.random()*255);
+                var color3 = Math.floor(Math.random()*255);
+                nuevacomida.style.backgroundColor = "rgb(" + color1 + ", " + color2 + ", " + color3 + ")";
+                
+                //Llamo a la funcion eliminarcomida.
+                nuevacomida.setAttribute("onclick","eliminacomida(this)");
+                
+                //Meto la comida dentro de la pecera
+                document.getElementById("pecera").appendChild(nuevacomida);
+                
+                //Muevo la comida hasta el fondo
+                movercomida(nuevacomida.id);
+            }
+        }
+        
+        //Función mueve comida en la que recibe el id de esa bolita
+        function movercomida(comidaid){
+            //Guardo en una variable el objeto comida
+            var capacomida = document.getElementById(comidaid);
+            
+            //Calculo su top y lo aumento en 1px
+            var mueve = capacomida.offsetTop;
+            mueve += 1;
+            capacomida.style.top = mueve + "px";
+            
+            //Llamo recursivamente a la funcion hasta que la bolita llega 
+            //al fondo de la pecera
+            if(mueve < 350){
+                setTimeout("movercomida('"+comidaid+"')",10);
+            }
+        }
+        
+        //Funcion elimina comida
+        function eliminacomida(bolita){
+            //Guardo en una variable la id del pez seleccionado
+            var idpezcome = document.getElementById("numeropez").innerHTML;
+            
+            //Guardo en la variable el pez
+            var pezcome = document.getElementById(idpezcome);
+            
+            //Aumento su value en 1(Las bolitas de comida que ha tomado)
+            pezcome.value++;
+           
+            //Elimino la comida.
+            bolita.parentNode.removeChild(bolita);
+            
+            //Actualizo el indicador de comida del pez.
+            document.getElementById("numcomida").innerHTML = "Comida: " + pezcome.value;
+        }
+       
+    </script>
+</head>
+    
+<body>
+    <button id="botonllenar" onclick="llenapecera()">Llenar Acuario</button>
+    <button id="botonpez" onclick="creapez()">Crear Pez</button>
+    <button id="botoncomida" onclick="creacomida()">Echar Comida</button>
+    <br><br>
+    <div>Nº de Pez: <span id="numeropez"></span></div>
+    <div id="numcomida">Comida: </div>
+    
+    <div id="pecera">
+        <div id="agua"></div>
+    </div>
+</body>
+</html>

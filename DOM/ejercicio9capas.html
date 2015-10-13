@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="author" content="Jesús Caballero">
+		<link rel="stylesheet" type="text/css" href="estilo.css">
+		<title>Ejercicio 9 Capas</title>
+		<script>
+            //Se ejecuta al finalizar la carga de la página
+            window.onload=function(){
+                document.getElementById("boton").onclick=rellenar;
+                document.getElementById("botoncrear").onclick=crearcapas;
+                document.getElementById("botonlimpiar").onclick=borrarcapas;
+            }
+            //crear mediante un bucle 9 capas dentro de contenedor.
+            
+            //Cada vez que pulsamos el botón creamos una capa dentro del contenedor
+            //hasta un máximo de 9.
+            function crearcapas(){
+                //En una variable tomamos la capa contenedora
+                var capacontenedor = document.getElementById("contenedor");
+                //Nos da el número de capas actuales
+                var capashijas = document.querySelectorAll("#contenedor div");
+                //var longitud = capacontenedor.childNodes.length;
+                
+                //Si hay menos de 9 capas entra
+                if(capashijas.length/*longitud*/ < 9)
+                {
+                    //Crear nuevo elemento de tipo div
+                    var capa = document.createElement("div");
+                    //añadir el elemento nuevo como nuevo hijo del elemento capa
+                    capacontenedor.appendChild(capa);
+                    
+                    /*for (i = 0; i < 9; i++) {
+                        var capa = document.createElement("div");
+                        document.getElementById("contenedor").appendChild(capa);
+                    }*/
+                }
+                
+            }
+            //Cambiar contenido de las capas creadas
+            function rellenar() {
+                //En un array almaceno todos los div que hay dentro de la capa contenedor
+                var capashijas = document.querySelectorAll("#contenedor div");
+                //Recorro este conjunto de capas 
+                for (i = 0; i < capashijas.length; i++) {
+                    //Cambia su texto HTML por su indice + 1
+                    capashijas[i].innerHTML=i+1;
+                    //Cambia su CSS si es par lo ponemos en negro e impar en blanco
+                    capashijas[i].style.backgroundColor = (i%2==0)?"black":"white";
+                }
+            }
+            //Mirar, por que no me funciona.
+            /*function borrarcapas() {
+                var padre = document.getElementById("contenedor");
+                var hijos = document.querySelectorAll("#contenedor div");
+                padre.removeChild(hijos);
+            }*/
+        </script>
+	</head>
+	
+	<body>
+	    <div id="contenedor">
+	        
+	    </div>
+	    
+	    <button id="botoncrear">Crear</button>
+	    <button id="boton">Rellenar</button>
+	    <button id="botonlimpiar">Limpiar</button>
+	</body>
+	
+</html>

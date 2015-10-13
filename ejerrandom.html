@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+1.CREAR CAPA
+2.POSICIONAMIENTO style.top, style.left
+3.COLOR style.backgroundcolor
+4.CREAR ONCLICK A LA NUEVA CAPA.
+var posicion1 = Math.floor(Math.random()*600) -> Numero aleatorio entre 0 y 600
+capa.style.top = posicion1+"px";
+setAtribute.onclick
+-->
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="author" content="Jesús Caballero">
+		<title>Ejercicio Random</title>
+		<style>
+            body{
+                margin: 0;
+            }
+            #contenedor{
+                width: 650px;
+                height: 650px;
+                border: 5px solid black;
+                border-radius: 10px;
+                background-color: black;
+                margin: 0;
+            }
+            #contenedor div{
+                position: absolute;
+                //width: 50px;
+                //height: 50px;
+                border: 1px solid white;
+                border-radius: 25px;
+                /*float: left;*/
+            }
+            button{
+                clear: both;
+                display: block;
+                margin: 0 auto;
+            }
+        </style>
+        
+        <script>
+            window.onload=function(){
+                document.getElementById("boton").onclick=crearcapas;
+                document.getElementById("limpia").onclick=limpiar;
+                setInterval(crearcapas, 1000);
+            }
+            
+            var capaid = 0;
+            
+            function crearcapas(){
+                var capacontenedor = document.getElementById("contenedor");
+                //var capashijas = document.querySelectorAll("#contenedor div");
+                var longitud = capacontenedor.childNodes.length;
+                if(longitud <= 144)
+                {
+                    //Crear nuevo elemento de tipo div
+                    var capa = document.createElement("div");
+                    
+                    capa.className = "bubble";
+                    capaid++;
+                    capa.id = "capa"+capaid;
+                    
+                    
+                    //Creamos los 3 colores y se lo ponemos a la capa
+                    var color1 = Math.floor(Math.random()*255);
+                    var color2 = Math.floor(Math.random()*255);
+                    var color3 = Math.floor(Math.random()*255);
+                    capa.style.backgroundColor = "rgb(" + color1 + ", " + color2 + ", " + color3 + ")";
+                    //Generamos la posición en la que se va a poner el circulo
+                    var posicion1 = Math.floor(Math.random()*600);
+                    capa.style.top = posicion1 + "px";
+                    var posicion2 = Math.floor(Math.random()*600);
+                    capa.style.left = posicion2 + "px";
+                    
+                    //Generamos el tamaño del circulo
+                    var tamano = Math.floor(Math.random()*100);
+                    capa.style.width = tamano + "px";
+                    capa.style.height = tamano + "px";
+                    
+                    //le vamos a añadir el onclick a la nueva capa
+                    capa.setAttribute("onclick", "eliminar(this)");
+                    //capa.onclick=eliminar; No existe, pero es lo equivalente
+                    
+                    //añadir el elemento nuevo como nuevo hijo del elemento capa
+                    capacontenedor.appendChild(capa);
+                    
+                }
+            }
+            function eliminar(elem){
+                //console.log(elem.id);
+                //this.parentNode.removeChild(this); Le tenemos que quitar elem a la funcion.
+                elem.parentNode.removeChild(elem);
+            }
+            function limpiar(){
+                console.log(capaid);
+                
+                var capashijas = document.querySelectorAll("#contenedor div");
+                for(i=0;i<capashijas.length;i++){
+                    capashijas[i].parentNode.removeChild(capashijas[i]);
+                }
+                capaid = 0;
+                console.log(capaid);
+            }
+            
+        </script>
+	</head>
+	
+	<body>
+        
+	    <div id="contenedor"></div>
+	    <br><br>
+	    <button id="boton">NUEVA</button>
+	    <button id="limpia">LIMPIAR</button>
+	</body>
+	
+</html>

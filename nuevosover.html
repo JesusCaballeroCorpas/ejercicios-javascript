@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+	<meta name="author" content="Jesús Caballero Corpas">
+    <title>Nuevo elemento Over</title>
+    <style>
+        body{
+            margin: 0;
+        }
+        #contenedor{
+            width: 650px;
+            height: 650px;
+            border: 5px solid black;
+            border-radius: 10px;
+            background-color: white;
+            margin: 0;
+        }
+        #contenedor div{
+            position: absolute;
+            //width: 50px;
+            //height: 50px;
+            border: 1px solid white;
+            border-radius: 25px;
+            /*float: left;*/
+        }
+        div{
+            width: 50px;
+            height: 50px;
+            background-color:darkorange;
+            text-align: center;
+        }
+    </style>
+    <script>
+        window.onload=function(){
+            document.getElementById("capa1").onmouseover=crearcapas;
+            //document.getElementsByClassName("capa1").onmouseover=crearcapas;
+        }
+        
+        var capaclass = 0;
+
+        function crearcapas(){
+            var capacontenedor = document.getElementById("contenedor");
+            //var capashijas = document.querySelectorAll("#contenedor div");
+            
+            //Crear nuevo elemento de tipo div
+            var capa = document.createElement("div");
+            capa.onmouseover = crearcapas;
+            capa.innerHTML = parseInt(this.innerHTML) + 1;
+            capa.className = "capa"+parseInt(this.innerHTML) + 1;
+    
+            //Creamos los 3 colores y se lo ponemos a la capa
+            var color1 = 100;
+            var color2 = parseInt(this.innerHTML)*50;
+            var color3 = 50;
+            capa.style.backgroundColor = "rgb(" + color1 + ", " + color2 + ", " + color3 + ")";
+            
+			//Generamos la posición en la que se va a poner el circulo
+            var posicion1 = Math.floor(Math.random()*600);
+            capa.style.top = posicion1 + "px";
+            var posicion2 = Math.floor(Math.random()*600);
+            capa.style.left = posicion2 + "px";
+            
+            //le vamos a añadir el onclick a la nueva capa para poder eliminarlos.
+            capa.setAttribute("onclick", "eliminar(this)");
+
+            //añadir el elemento nuevo como nuevo hijo del elemento capa
+            capacontenedor.appendChild(capa);
+        }
+        
+        function eliminar(elem){
+            elem.parentNode.removeChild(elem);
+        }
+    </script>
+</head>
+    
+<body>
+   <div id="contenedor">
+       <div id="capa1">1</div>
+   </div>
+    
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<!--
+Ejercicio:
+1er INTERVALO
+Cada 1 segundo crear una capa
+asignar onclick
+llamo a la funcion que muevepato esa capa
+
+muevepato
+para cada capa
+2do INTERVALO
+cada 1 segundo mover la capa 50px left
+si su posición = fin  free++
+Clear interval
+Elimina capa
+
+onclick pato
+clearinterval
+removechild->elimina capa
+actualiza contadores kill++
+-->
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Patitos</title>
+    <style>
+        #agua{
+            position:absolute;
+            background-color: cyan;
+            width: 600px;
+            height: 200px;
+            top:187px;
+            left:50px;
+        }
+        .pato{
+            position:absolute;
+            background-color: yellow;
+            background-image: url(images/pato.jpg);
+            width: 50px;
+            height: 37px;
+            top:150px;
+            left:0px;
+        }
+    </style>
+    <script>
+        var intervaloCreaPato = setInterval("creapato()",1000);
+        var kill = 0;
+        var free = 0;
+        var idpato = 1;
+        /*window.onload=function(){
+            intervaloCreaPato;
+        }*/
+        
+        
+        function creapato(){
+            //Creo un nuevo pato
+            var pato = document.createElement("div");
+            pato.className = "pato";
+            pato.id = "pato" + idpato;
+            idpato++;
+            
+            //Le pongo una foto de fondo a la capa pato
+            //pato.style.backgroundImage = url("images/pato.jpg");
+            
+            //Le creo el evento eliminar pato
+            pato.setAttribute("onclick","eliminarpato(this)");
+            
+            //inserto el pato en el body
+            document.body.appendChild(pato);
+           
+            //Llamo a la funcion muevepato
+            muevepato(pato.id);
+        
+        }
+        
+        //Funcion para mover el pato
+        function muevepato(idpato){
+            var capapato = document.getElementById(idpato);
+      
+            var mueve = capapato.offsetLeft;
+            mueve += 50;
+            capapato.style.left = mueve + "px";
+            
+            if(mueve < 650){
+                setTimeout("muevepato('"+idpato+"')",500);
+            } else {
+                capapato.parentNode.removeChild(capapato);
+                free++;
+                document.getElementById("free").innerHTML = "Free: " + free;
+            }
+            
+        }
+        
+        //Funcion para eliminar patos y parar su intervalo
+        function eliminarpato(pato){
+            pato.parentNode.removeChild(pato);
+            kill++;
+            document.getElementById("kill").innerHTML = "Kill: " + kill;
+        }
+    </script>
+</head>
+    
+<body>
+    <div id="kill">Kill: 0</div>
+    <div id="free">Free: 0</div>
+    <div id="agua"></div>
+    
+</body>
+</html>

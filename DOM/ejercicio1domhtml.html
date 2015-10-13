@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="author" content="Jesús Caballero">
+		<title>Ejercicio 1 DOM HTML</title>
+		<script>
+        //Use the innerHTML property to change the content of the <p> element to "New text!".
+        // Click en el parrafo
+        window.onload = function(){
+            document.getElementById("demo").onclick=cambiar;
+        }
+        function cambiar(){
+            document.getElementById("demo").innerHTML="New text!";
+        }
+        </script>
+	</head>
+	
+	<body>
+	    <p id="demo">Display the result here.</p> 
+	</body>
+	
+</html>

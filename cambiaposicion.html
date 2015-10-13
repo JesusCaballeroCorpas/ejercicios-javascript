@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Cambia posicion capa</title>
+	<style>
+        div{
+            width: 50px;
+            height: 50px;
+            background-color: coral;
+            text-align: center;
+        }
+    </style>
+    <script>
+        //Creo Variables
+        var contador;
+        var color1;
+        var color2;
+        var color3;
+        var margen;
+        var intervalo;
+        var adelante;
+        
+        //Inicializo las variables y comienzo el intervalo
+        function comenzar(){
+            contador = 0;
+            borde = 0;
+            margen = 0;
+            adelante = true;
+            document.getElementById("capa").innerHTML = contador;
+            intervalo = setInterval("muevecapa()",1000);
+        }
+        
+        function muevecapa(){
+            //Si va hacia arriba subo el contador y el margen
+            if(adelante){
+                contador++;
+                margen += 50;
+                
+            } else {//Si va hacia abajo disminuyo las variables
+                contador--;
+                margen -= 50;
+            }
+            
+            //Muestro el numero en la capa
+            document.getElementById("capa").innerHTML = contador;
+            
+            //Creo el color y se lo cambio a la capa
+            color1 = Math.floor(Math.random()*255);
+            color2 = Math.floor(Math.random()*255);
+            color3 = Math.floor(Math.random()*255);
+            document.getElementById("capa").style.backgroundColor = "rgb(" + color1 + ", " + color2 + ", " + color3 + ")";
+            
+            //Voy cambiando el margen en la capa
+            document.getElementById("capa").style.marginLeft = margen + "px";
+            
+            //Si contador es igual a 5 cambio la variable 
+            //booleana a false para que vaya hacia atras.
+            if(contador == 5){
+                adelante = false;
+                
+            }
+            
+            //Si contador llega hasta 0 paro el intervalo.
+            if(contador == 0){
+                clearInterval(intervalo);
+            }
+        }
+    </script>
+</head>
+    
+<body>
+    <div id="capa">0</div><br>
+    <input type="button" onclick="comenzar()" value="Comenzar">
+    
+</body>
+</html>
