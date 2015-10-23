@@ -1,0 +1,246 @@
+<!DOCTYPE HTML>
+<!--
+1 caja avion
+    izquierda a derecha constante ciclico
+2 crear objetivos BOTON
+    crea aleatoriamente 5 cajas en el fondo
+    Creo var posiciones con array con 5 posiciones.
+    o getelementsbyclass.
+3 Fuego BOTON
+    crea proyectil que se desplaza hacia el fondo
+4 Acierto y fallos
+    Si coincide con algun objetivo creado cambio imagen proyectil por imagen explosion.
+    Y despues de un segundo desaparece el proyectil, el objetivo y el fuego e incrementa     aciertos, en caso contrario incrementa fallos.
+-->
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Avión Bombardero</title>
+    <style>
+        body{
+            margin:0px;
+            padding: 0px;
+            font-family: serif;
+            color: cornsilk;
+            z-index: -100;
+            background-color: black;
+        }
+        #mapa{
+            background-color: cornflowerblue;
+            position: absolute;
+            height: 400px;
+            width: 800px;
+            z-index: -1;
+        }
+        #capasuperior{
+            background-color: black;
+            position: absolute;
+            height: 400px;
+            width: 800px;
+            left: 800px;
+            z-index: 1;;
+        }
+        #avion{
+            position: absolute;
+            background-image: url("images/helicoptero.jpg");
+            height: 50px;
+            width: 100px;
+            z-index: -1;
+            top:50px;
+        }
+        .objetivo{
+            position: absolute;
+            background-color: gold;
+            background-image: url("images/edificio.jpg");
+            height: 50px;
+            width: 25px;
+            z-index: 5;
+            bottom: 0px;
+            left: -775px;
+        }
+        .bomba{
+            position: absolute;
+            background-color: orangered;
+            height: 10px;
+            width: 5px;
+            z-index: 5;
+            top: 95px;
+            left: 795px;
+            border-bottom-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+        }
+        #fin{
+            position: absolute;
+            font-size: 50px;
+            text-align: center;
+            top: 100px;
+            left: 100px;
+            display: none;
+        }
+    </style>
+    <script>
+        //Creo variables globales
+        var intervalAvion = setInterval("vuela()",5);
+        var idObjetivo = 0;
+        var idBomba = 0;
+        var objetivosCreados = 0;
+        var destruyeObjetivo = false;
+        var objetivoADestruir;
+        var conAciertos = 0;
+        var conFallos = 0;
+        //Funcion que hace volar el avión
+        function vuela(){
+            var avion = document.getElementById("avion");
+            var mueve = avion.offsetLeft;
+            mueve += 1;
+            if(mueve < 800){
+                avion.style.left = mueve + "px";
+            } else {
+                avion.style.left = -200 + "px";
+            }
+        }
+        //Función para crear objetivos
+        function crearObjetivos(){
+            //Si ha creado 5 objetos ya no vuelve a entrar
+            if(objetivosCreados < 5){
+                //Creo el objetivo y le doy id y clase
+                var objetivo = document.createElement("div");
+                objetivo.className = "objetivo";
+                objetivo.id = "objetivo" + idObjetivo;
+                idObjetivo++;
+                
+                //Le asigno posiciones aleatorias dentro de la pantalla sin que se repita ninguna.
+                var posicion = Math.floor(Math.random()*775);
+                objetivo.style.left = posicion + "px";
+
+                //Añado el nuevo objetivo al mapa
+                document.getElementById("mapa").appendChild(objetivo);
+                objetivosCreados++;
+                
+                //Vuelvo a llamar a la función para que se sigan creando objetivos
+                setTimeout("crearObjetivos()",1);
+                
+            } else {
+                document.getElementById("botonObjetivos").disabled = true;
+                document.getElementById("botonFuego").disabled = false;
+            }
+        }
+        //Función para lanzar una bala
+        function soltarBomba(){
+            //Si he creado los objetivos dejo lanzar bombas.
+            if(objetivosCreados == 5){
+                //Guardo la posición actual del avión
+                var avion = document.getElementById("avion");
+                var posicionAvion = avion.offsetLeft + 50;
+
+                //Creo la bomba y le asigno su clase y su id
+                var bomba = document.createElement("div");
+                bomba.className = "bomba";
+                bomba.id = "bomba" + idBomba;
+                idBomba++;
+
+                //Le asigno la posición donde se tiene que crear la bomba
+                bomba.style.left = posicionAvion + "px";
+
+                //Añado la bomba al mapa
+                document.getElementById("mapa").appendChild(bomba);
+                
+                //Muevo la bomba hasta abajo
+                moverBomba(bomba.id);
+            }
+        }
+        
+        //Función para mover la bomba hasta los objetivos
+        function moverBomba(bombaid){
+            //Guardo en una variable el objeto bomba
+            var capaBomba = document.getElementById(bombaid);
+            
+            //Calculo su top y lo aumento en 1px
+            var mueve = capaBomba.offsetTop;
+            mueve += 1;
+            capaBomba.style.top = mueve + "px";
+            
+            //Guardo en un array todos los objetivos y calculo el left de la bomba
+            var objetivos = document.getElementsByClassName("objetivo");
+            var leftBomba = capaBomba.offsetLeft;
+            
+            //Recorro el array y compruebo si la bomba chocaría con algún objetivo
+            for(var i = 0;i < objetivos.length;i++){
+                var posObj = objetivos[i].offsetLeft;
+                if(leftBomba >= (posObj - 5) && leftBomba <= (posObj + 25)){
+                    objetivoADestruir = objetivos[i];
+                    if(mueve == 340){
+                       destruyeObjetivo = true; 
+                    }
+                }
+            }
+            
+            //Llamo recursivamente a la funcion hasta que la bomba llega hasta el 
+            //suelo o hasta un edificio
+            if(destruyeObjetivo && mueve == 340){
+                //Convierto la bomba en humo
+                capaBomba.style.left = (capaBomba.offsetLeft - 15) + "px";
+                capaBomba.style.top = 330 + "px";
+                capaBomba.style.width = 30 + "px";
+                capaBomba.style.height = 30 + "px";
+                capaBomba.style.backgroundImage = "url('./images/explosion1.png')";
+                capaBomba.style.backgroundColor = "rgba(" + 0 + ", " + 0 + ", " + 0 + ", " + 0 +")";
+                
+                //Elimino la bomba y el objetivo a los dos segundos
+                setTimeout("explota('"+capaBomba.id+"')",1000);
+                setTimeout("explota('"+objetivoADestruir.id+"')",1000);
+                destruyeObjetivo = false;
+                
+                //Incremento los aciertos
+                conAciertos++;
+                document.getElementById("aciertos").innerHTML = "Aciertos: " + conAciertos;
+                
+            } else if(mueve < 390){
+                setTimeout("moverBomba('"+bombaid+"')",1);
+            } else {
+                //Convierto la bomba en humo
+                capaBomba.style.left = (capaBomba.offsetLeft - 15) + "px";
+                capaBomba.style.top = 380 + "px";
+                capaBomba.style.width = 30 + "px";
+                capaBomba.style.height = 30 + "px";
+                capaBomba.style.backgroundImage = "url('./images/explosion1.png')";
+                capaBomba.style.backgroundColor = "rgba(" + 0 + ", " + 0 + ", " + 0 + ", " + 0 +")";
+                
+                //Elimino la bomba a los 2 segundos
+                setTimeout("explota('"+capaBomba.id+"')",1000);
+                
+                //Incremento los fallos
+                conFallos++;
+                document.getElementById("fallos").innerHTML = "Fallos: " + conFallos;
+            }
+        }
+        
+        //Funcion para eliminar bombas o objetivos
+        function explota(capaid){
+            var capa = document.getElementById(capaid);
+            capa.parentNode.removeChild(capa);
+            
+            //Si aciertos llega ha 5 termino el juego.
+            if(conAciertos == 5){
+                clearInterval(intervalAvion);
+                document.getElementById("fin").style.display = "block";
+            }
+        }
+    </script>
+</head>
+    
+<body>
+    <div id="mapa">
+        <div id="fin">Enhorabuena!!! ha destruido<br>todos los objetivos</div>
+        <div class="objetivo"></div>
+        <img id="avion" src="images/helicoptero.jpg" />
+    </div>
+    <div id="capasuperior"></div>
+    <div id="controles">
+        <div id="aciertos">Aciertos: 0</div>
+        <div id="fallos">Fallos: 0</div>
+        <button id="botonObjetivos" onclick="crearObjetivos()">Crear Objetivos</button>
+        <button id="botonFuego" onclick="soltarBomba()" disabled>Fuego</button>
+    </div>
+</body>
+</html>

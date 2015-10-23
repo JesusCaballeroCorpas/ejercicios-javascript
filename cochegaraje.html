@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<!--
+Creación Elementos
+-Atributos
+    +ID
+    +Value
+-Eventos
+    +onclick
+    +onmouseover
+-Appendchild
+-Remove
+-This
+
+SetInterval -- clearInterval
+SetTimeout  -- Se ejecuta una sola vez -- clearTimeout
+Random
+parseInt
+-->
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Coche Garaje</title>
+    <style>
+        #cochera{
+            background-color: darkgrey;
+            width: 600px;
+            height: 200px;
+        }
+        #cielo{
+            background-color:aquamarine;
+            width: 600px;
+            height: 100px;
+            z-index: -1;
+        }
+        #puerta{
+            position:absolute;
+            background-color: beige;
+            width: 5px;
+            height: 100px;
+            left: 450px;
+            top: 108px;
+            z-index: 1;
+        }
+        #coche{
+            position:absolute;
+            background-color: red;
+            width: 100px;
+            height: 50px;
+            top: 150px;
+            left: 8px;//left: 350px;
+            border-top-left-radius: 25%;
+            border-top-right-radius: 75%;
+            border-bottom-left-radius: 20%;
+            border-bottom-right-radius: 30%;
+        }
+        .rueda{
+            position:absolute;
+            background-color: grey;
+            width: 15px;
+            height: 15px;
+            top: 30px;
+            border: 5px solid black;
+            border-radius: 50%;
+        }
+        #rueda1{
+            left:10px;
+        }
+        #rueda2{
+            left:65px;
+        }
+        #controles{
+            position: absolute;
+            top: 230px;
+            border:1px solid black;
+            padding: 20px;
+            left: 200px;
+            padding-right: 80px;
+            padding-top: 30px;
+            background-color: cadetblue;
+            color: white;
+        }
+        #botonAbrir{
+            position: absolute;
+            top: 15px;
+            left: 200px;
+        }
+        #botonCerrar{
+            position: absolute;
+            top: 45px;
+            left: 196px;
+        }
+    </style>
+    
+    <script>
+        /*window.onload=function(){
+            document.getElementById("botonCerrar").disabled = true;
+            document.getElementById("botonParar").disabled = true;
+        }*/
+        //Defino variables globales
+        var movimientoCoche;
+        var puertaAbierta = false;
+        //Funcion para avanzar el coche.
+        function avanzar(){
+            movimientoCoche = setInterval("movimiento('avance')",5);
+            //Activo y desactivo los demas controles
+            document.getElementById("botonAvanzar").disabled = true;
+            document.getElementById("botonAtras").disabled = true;
+            document.getElementById("botonParar").disabled = false;
+        }
+        //Función para mover hacia atras el coche.
+        function atras(){
+            movimientoCoche = setInterval("movimiento('atras')",5);
+            //Activo y desactivo los demas controles
+            document.getElementById("botonAvanzar").disabled = true;
+            document.getElementById("botonAtras").disabled = true;
+            document.getElementById("botonParar").disabled = false;
+        }
+        //Función movimiento del coche
+        function movimiento(direccion){
+            var coche = document.getElementById("coche");
+            var mueve = coche.offsetLeft;
+            if(direccion == "avance"){
+                mueve += 1;   
+            } 
+            if(direccion == "atras") {
+                mueve -= 1;
+            }
+            //Si choca contra algo llamo a la funcion golpe.
+            if(mueve < 8 || mueve > 508 || (mueve == 351 && !puertaAbierta)
+              || (mueve == 454 && !puertaAbierta)){
+                golpe();
+            } else { //Si no ha chocado el coche avanza.
+                coche.style.left = mueve + "px";
+            }
+        }
+        //Función para parar el coche
+        function parar(){
+            clearInterval(movimientoCoche);
+            //Activo y desactivo los demas controles
+            document.getElementById("botonParar").disabled = true;
+            document.getElementById("botonAtras").disabled = false;
+            document.getElementById("botonAvanzar").disabled = false;
+        }
+        //Funcion que controla los porrazos
+        function golpe(){
+            //Paro el intervalo
+            clearInterval(movimientoCoche);
+            //Guardo el objeto porrazo en una variable
+            var golpe = document.getElementById("porrazo");
+            //Guardo su value + 1
+            var valuegolpe = parseInt(golpe.getAttribute("value")) + 1;
+            //Muestro los porrazos dados
+            golpe.innerHTML = "Porrazo: " + valuegolpe;
+            //Actualizo el value de porrazos
+            golpe.setAttribute("value",valuegolpe);
+            //Actualizo los botones
+            document.getElementById("botonParar").disabled = true;
+            document.getElementById("botonAtras").disabled = false;
+            document.getElementById("botonAvanzar").disabled = false;
+        }
+        
+        //Función para abrir la puerta
+        function abrir(){
+            puertaAbierta = true;
+            var puerta = document.getElementById("puerta");
+            var mueve = puerta.offsetTop;
+            mueve -= 1;
+            puerta.style.top = mueve + "px";
+            if(mueve > 8){
+                setTimeout("abrir()",10);
+            }
+            //Activo y desactivo los demas controles
+            document.getElementById("botonAbrir").disabled = true;
+            document.getElementById("botonCerrar").disabled = false;
+        }
+        //Función para cerrar la puerta
+        function cerrar(){
+            puertaAbierta = false;
+            var puerta = document.getElementById("puerta");
+            var mueve = puerta.offsetTop;
+            mueve += 1;
+            puerta.style.top = mueve + "px";
+            if(mueve < 108){
+                setTimeout("cerrar()",10);
+            }
+            //Activo y desactivo los demas controles
+            document.getElementById("botonAbrir").disabled = false;
+            document.getElementById("botonCerrar").disabled = true;
+        }
+    </script>
+</head>
+    
+<body>
+    <div id="cochera">
+        <div id="cielo"></div>
+        <div id="puerta"></div>
+        <div id="coche">
+            <div class="rueda" id="rueda1"></div>
+            <div class="rueda" id="rueda2"></div>
+        </div>
+    </div>
+    <div id="controles">
+        <button id="botonAtras" onclick="atras()">Atras</button>
+        <button id="botonParar" onclick="parar()" disabled>Parar</button>
+        <button id="botonAvanzar" onclick="avanzar()">Avanzar</button>
+        <button id="botonAbrir" onclick="abrir()">Abrir</button>
+        <button id="botonCerrar" onclick="cerrar()" disabled>Cerrar</button>
+        <br><br><div id=porrazo value="0">Porrazo: 0</div>
+    </div>
+</body>
+</html>

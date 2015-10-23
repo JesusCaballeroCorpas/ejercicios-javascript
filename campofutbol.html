@@ -30,14 +30,31 @@ Botón Comenzar
             border-width: 10px;
             top: 100px;
         }
+        #boton{
+            position: absolute;
+            border: 1px solid white;
+            top: 5px;
+            padding: 31px;
+            background-color:cadetblue;
+        }
         #datos{
             position: absolute;
-            top: 520px;
+            top: 525px;
+            border: 1px solid white;
+            width: 698px;
+            padding: 10px;
+            background-color:cadetblue;
+            color:white;
         }
         #formulario{
             position: absolute;
-            left: 200px;
-            top: 0px;
+            left: 155px;
+            width: 550px;
+            top: 5px;
+            border: 1px solid white;
+            padding: 10px;
+            background-color:cadetblue;
+            color:white;
         }
         #cesped{
             position:absolute;
@@ -48,7 +65,7 @@ Botón Comenzar
         #linea{
             position:absolute;
             width: 10px;
-            height: 400px;
+            //height: 400px;
             background-color: white;
             left: 340px;
         }
@@ -67,27 +84,34 @@ Botón Comenzar
             position: absolute;
             width: 25px;
             height: 25px;
-            bottom: 375px;
-            left: 315px;
+            //bottom: 375px;
+            //left: 315px;
             background-color: red;
             border-radius: 50%;
+            z-index: 1;
         }
         .jugEqu2{
             position: absolute;
             width: 25px;
             height: 25px;
-            bottom: 375px;
-            left: 675px;
+            //bottom: 375px;
+            //left: 675px;
+            left: 350px;
             background-color: blue;
             border-radius: 50%;
+            z-index: 1;
         }
     </style>
     
     <script>
+        window.onload=function(){
+            document.getElementById("anadir").disabled = true;
+        }
         var campo = document.getElementById("campo");
         var nivelcesped = 0;
         var nivellinea = 0;
         var nivelcentro = 0;
+        var idjugador = 0;
         //Funcion para pintar el cesped
         function pintacampo(){
             nivelcesped++;
@@ -115,34 +139,95 @@ Botón Comenzar
               document.getElementById("centro").style.borderWidth = nivelcentro + "px";
               setTimeout("pintacentro()",100);
             }
+            document.getElementById("anadir").disabled = false;
         }
+        
         //Funcion para añadir los jugadores al campo
         function anadir(){
+            //Borro los jugadores que ya hubiese en el campo y dejo en blanco el texto.
+            var capacesped = document.querySelectorAll("#cesped div");
+            for(i=0;i<capacesped.length;i++){
+                capacesped[i].parentNode.removeChild(capacesped[i]);
+            }
+            idjugador = 0;
+            document.getElementById("numjugador").innerHTML = "";
+            document.getElementById("numvalor").innerHTML = "Valor: ";
+            
             //Recojo los valores del formulario
             var numJugEqui1 = document.getElementById("equipo1").value;
             var numJugEqui2 = document.getElementById("equipo2").value;
             
+            //Creo los jugadores aleatoriamente/////////////////
+            //Los del equipo 1
+            for(var i = 0;i < numJugEqui1;i++){
+                //Creo un nuevo jugador y le doy un id y una clase
+                var jugadorNuevo = document.createElement("div");
+                jugadorNuevo.className = "jugEqu1";
+                jugadorNuevo.id = "Jugador" + idjugador;
+                idjugador++;
+                jugadorNuevo.value = 0;
+                
+                //Le asigno posiciones aleatorias dentro de su campo.
+                var posicion1 = Math.floor(Math.random()*375);
+                jugadorNuevo.style.bottom = posicion1 + "px";
+                var posicion2 = Math.floor(Math.random()*315);
+                jugadorNuevo.style.left = posicion2 + "px";
+                
+                //Llamo a la funcion seleccionajugador.
+                jugadorNuevo.setAttribute("onclick","seleccionaJugador(this)");
+                
+                //Añado el jugador al campo
+                document.getElementById("cesped").appendChild(jugadorNuevo);
+            }
+            //Los del equipo 2
+            for(var i = 0;i < numJugEqui2;i++){
+                //Creo un nuevo jugador y le doy un id y una clase
+                var jugadorNuevo = document.createElement("div");
+                jugadorNuevo.className = "jugEqu2";
+                jugadorNuevo.id = "Jugador" + idjugador;
+                idjugador++;
+                jugadorNuevo.value = 0;
+                
+                //Le asigno posiciones aleatorias dentro de su campo.
+                var posicion1 = Math.floor(Math.random()*375);
+                jugadorNuevo.style.bottom = posicion1 + "px";
+                var posicion2 = Math.floor(Math.random()*325)+350;
+                jugadorNuevo.style.left = posicion2 + "px";
+                
+                //Llamo a la funcion seleccionapez.
+                jugadorNuevo.setAttribute("onclick","seleccionaJugador(this)");
+                
+                //Añado el jugador al campo
+                document.getElementById("cesped").appendChild(jugadorNuevo);
+            }
+        }
+        
+        //Función para seleccionar un jugador.
+        function seleccionaJugador(jugador){
+            document.getElementById("numjugador").innerHTML = jugador.id;
+            document.getElementById("numvalor").innerHTML = "Valor: " + jugador.value;
+            jugador.value++;
         }
     </script>
 </head>
     
 <body>
-    <button id="botoncomenzar" onclick="pintacampo()">Comenzar</button>
+    <div id="boton">
+        <button id="botoncomenzar" onclick="pintacampo()">Comenzar</button>
+    </div>
+    
     <div id="formulario">
-        Equipo 1: <input type="number" id="equipo1" step="1"> Rojo<br>
-        Equipo 2: <input type="number" id="equipo2" step="1"> Azul<br>
+        Equipo 1: <input type="number" id="equipo1" step="1" min="0" max="11"> Rojo<br>
+        Equipo 2: <input type="number" id="equipo2" step="1" min="0" max="11"> Azul<br>
         <button id="anadir" onclick="anadir()">Añadir</button>
     </div>
     
-    <br><br>
     <div id="campo">
         <div id="cesped"></div>
         <div id="linea"></div>
         <div id="centro"></div>
-        <div class="jugEqu1"></div>
-        <div class="jugEqu2"></div>
     </div>
-    <br><br>
+    
     <div id="datos">
         <div>Jugador: <span id="numjugador"></span></div>
         <div id="numvalor">Valor: </div>

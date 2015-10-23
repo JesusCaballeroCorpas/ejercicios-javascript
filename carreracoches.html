@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!--
+Crear coches entre 2 y 5
+una salida y una meta
+Apuesta por: | Cantidad: | Disponible: 500€
+cada coche tiene random el timeout.
+Boton nueva partida que limpie todo y empiece de nuevo.
+-->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Carrera de Coches</title>
+    <style>
+        body{
+            margin:0px;
+            padding: 0px;
+            font-family: serif;
+            color: cornsilk;
+            z-index: -100;
+            background-color: black;
+        }
+        .cajaPrincipal{
+            border:2px solid white;
+            padding: 10px;
+            margin:10px;
+        }
+        #carretera{
+            position: relative;
+            width: 794px;
+            height: 400px;
+            background-color: gainsboro;
+        }
+        .salida{
+            margin:15px 70px;
+            width:5px;
+            height: 50px;
+            border: 5px solid white;
+            border-left: 0px;
+        }
+        #llegada{
+            position: absolute;
+            width: 5px;
+            height: 420px;
+            background-color: white;
+            top: 0px;
+            left: 710px;
+            border: 5px solid black;
+            border-bottom: 0px;
+            border-top: 0px;
+        }
+        .coche{
+            position: absolute;
+            background-color: transparent;
+            background-image: url(images/coche.png);
+            width: 80px;
+            height: 30px;
+            top: 40px;
+            left: 0px;
+            z-index: 1;
+        }
+        .salida p{
+            position: relative;
+            color:black;
+            font-size: 40px;
+            top: -40px;
+            left: 25px;
+        }
+        .mensaje{
+            position: absolute;
+            font-size: 50px;
+            text-align: center;
+            top: 100px;
+            left: 140px;
+            display: none;
+            color: firebrick;
+            z-index:5;
+        }
+    </style>
+    
+    <script>
+        //Creo variables globales
+        var alturaCoche = 40;
+        var idCoche = 1;
+        var ganador = 500;
+        var idGanador = "";
+        
+        //Función para crear coches
+        function crearCoches(){
+            //Reseteo los coches que haya pintados antes de crear los nuevos.
+            var arrayCoches = document.querySelectorAll("#carretera .coche");
+            for(var i = 0;i < arrayCoches.length;i++){
+                arrayCoches[i].parentNode.removeChild(arrayCoches[i]);
+            }
+            //Oculto los mensajes que pueda haber
+            document.getElementById("acierto").style.display = "none";
+            document.getElementById("fallo").style.display = "none";
+            
+            //Guardo en una variable el número de coches a crear
+            var numCoches = document.getElementById("numCoches").value;
+            
+            //Creo tantos coches como se indique
+            while(numCoches > 0){
+                //Creo el coche y le doy id y clase
+                var coche = document.createElement("div");
+                coche.className = "coche";
+                coche.id = "coche" + idCoche;
+                idCoche++;
+                
+                //Le asigno posicion dentro de la carretera
+                coche.style.top = alturaCoche + "px";
+                alturaCoche += 75;
+                
+                //Añado el nuevo coche a la carretera
+                document.getElementById("carretera").appendChild(coche);
+                numCoches--;
+            }
+            alturaCoche = 40;
+            idCoche = 1;
+            document.getElementById("numCoches").value = "";
+        }
+        
+        //Función para comenzar la carrera
+        function comenzarCarrera(){
+            //Recibo los coches creados en un array
+            var arrayCoches = document.getElementsByClassName("coche");
+            
+            //A cada coche le doy unos milisegundos de movimiento
+            for(var i = 0;i < arrayCoches.length;i++){
+                var coche = arrayCoches[i];
+                coche.value = Math.floor(Math.random()*20);
+                
+                //Compruebo cual va a ser el coche ganador
+                if(coche.value < ganador){
+                    ganador = coche.value;
+                    idGanador = coche.id;
+                }
+                
+                //Llamo a mover coche.
+                moverCoche(coche.id);
+            }
+        }
+        
+        //Función para mover los coches
+        function moverCoche(cocheid){
+            //Guardo en una variable el objeto coche
+            var capaCoche = document.getElementById(cocheid);
+            
+            //Calculo su left y lo aumento en 1px
+            var mueve = capaCoche.offsetLeft;
+            mueve += 1;
+            capaCoche.style.left = mueve + "px";
+            
+            //Llamo recursivamente a la funcion hasta que el coche llega al final
+            if(mueve < 730){
+                var tiempo = capaCoche.value;
+                setTimeout("moverCoche('"+cocheid+"')",tiempo);
+            } else if(ganador != 500){ //Si llega un coche comprueba si es el ganador.
+                
+                //Guardo lo que se ha introducido en la apuesta
+                //, la cantidad y el dinero disponible
+                var apuesta = "coche" + document.getElementById("inputApuesta").value;
+                var cantidad = document.getElementById("inputCantidad").value;
+                var dinero = document.getElementById("spanDinero");
+                
+                //Si aciertas el ganador le sumamos su apuesta y si falla se la restamos
+                if(idGanador == apuesta){
+                    dinero.setAttribute("value",parseInt(dinero.getAttribute("value")) + parseInt(cantidad));
+                    mostrarMensaje("acierto");
+                } else {
+                    dinero.setAttribute("value",parseInt(dinero.getAttribute("value")) - parseInt(cantidad));
+                    mostrarMensaje("fallo");
+                }
+                
+                //Se actualiza el innerHTML del dinero y se resetean las demas variables.
+                document.getElementById("spanDinero").innerHTML = dinero.getAttribute("value");
+                ganador = 500;
+                idGanador = "";
+                document.getElementById("inputApuesta").value = "";
+                document.getElementById("inputCantidad").value = "";
+            }
+        }
+        
+        //Funcion nueva partida
+        function reset(){
+            //Recibo los coches creados en un array
+            var arrayCoches = document.querySelectorAll("#carretera .coche");
+            
+            //Borro todos los coches
+            for(var i = 0;i < arrayCoches.length;i++){
+                arrayCoches[i].parentNode.removeChild(arrayCoches[i]);
+            }
+            
+            //Reseteo las variables
+            document.getElementById("botonCrear").disabled = false;
+            document.getElementById("botonCarrera").disabled = false;
+            document.getElementById("spanDinero").setAttribute("value",500);
+            document.getElementById("spanDinero").innerHTML = "500";
+            document.getElementById("acierto").style.display = "none";
+            document.getElementById("fallo").style.display = "none";
+            document.getElementById("fin").style.display = "none";
+        }
+        
+        //Función para mostrar mensaje entre carreras
+        function mostrarMensaje(condicion){
+            //Si acierta la apuesta muestra mensaje de enhorabuena
+            if(condicion == "acierto"){
+                document.getElementById("acierto").style.display = "block";
+            //Si pierde todo el dinero finaliza el juego
+            } else if(document.getElementById("spanDinero").getAttribute("value") <= 0){
+                document.getElementById("botonCrear").disabled = true;
+                document.getElementById("botonCarrera").disabled = true;
+                document.getElementById("fin").style.display = "block";
+            //Si falla la apuesta pero aun tiene dinero
+            } else {
+                document.getElementById("fallo").style.display = "block";
+            }
+        }
+    </script>
+</head>
+    
+<body>
+    <div id="comienzo" class="cajaPrincipal">
+        <button id="botonNueva" onclick="reset()">Nueva Partida</button>
+        Número de Coches (entre 2 y 5):
+        <input type="number" step="1" min="2" max="5" id="numCoches">
+        <button id="botonCrear" onclick="crearCoches()">Crear Coches</button>
+    </div>
+    <div id="carretera" class="cajaPrincipal">
+        <div id="acierto" class="mensaje">Enhorabuena!!!<br>ha ganado su apuesta.<br>Crea coches  para<br>seguir ganando</div>
+        <div id="fallo" class="mensaje">Ha perdido la apuesta.<br> Crea coches y<br>sigue probando</div>
+        <div id="fin" class="mensaje">GAME OVER<br>Comience una nueva partida</div>
+        <div class="salida"><p>1</p></div>
+        <div class="salida"><p>2</p></div>
+        <div class="salida"><p>3</p></div>
+        <div class="salida"><p>4</p></div>
+        <div class="salida"><p>5</p></div>
+        <div id="llegada"></div>
+    </div>
+    <div id="controles" class="cajaPrincipal">
+        Apuesta por: <input type="number" step="1" min="1" max="5" id="inputApuesta">
+        Cantidad: <input type="number" step="1" min="0" id="inputCantidad"> €
+        Disponible: <span id="spanDinero" value="500">500</span> € 
+        <button id="botonCarrera" onclick="comenzarCarrera()">Comenzar Carrera</button>
+    </div>
+</body>
+</html>
