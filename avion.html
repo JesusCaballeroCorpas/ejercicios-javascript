@@ -15,6 +15,7 @@
 <html lang="">
 <head>
     <meta charset="UTF-8">
+    <meta name="author" content="Jesús Caballero">
     <title>Avión Bombardero</title>
     <style>
         body{
@@ -110,7 +111,16 @@
                 idObjetivo++;
                 
                 //Le asigno posiciones aleatorias dentro de la pantalla sin que se repita ninguna.
+                var arrayObjetivos = document.querySelectorAll(".objetivo");
                 var posicion = Math.floor(Math.random()*775);
+                //debugger;
+                for(var i = 0;i < arrayObjetivos.length;i++){
+                    if(posicion <= arrayObjetivos[i].offsetLeft && posicion + 25 >= arrayObjetivos[i].offsetLeft ||
+                       posicion <= (parseInt(arrayObjetivos[i].offsetLeft) + 25) && posicion + 25 >= (parseInt(arrayObjetivos[i].offsetLeft) + 25)){
+                        posicion = Math.floor(Math.random()*775);
+                        i = 0;
+                    }
+                }
                 objetivo.style.left = posicion + "px";
 
                 //Añado el nuevo objetivo al mapa
@@ -132,7 +142,7 @@
                 //Guardo la posición actual del avión
                 var avion = document.getElementById("avion");
                 var posicionAvion = avion.offsetLeft + 50;
-
+                
                 //Creo la bomba y le asigno su clase y su id
                 var bomba = document.createElement("div");
                 bomba.className = "bomba";
@@ -221,7 +231,7 @@
             capa.parentNode.removeChild(capa);
             
             //Si aciertos llega ha 5 termino el juego.
-            if(conAciertos == 5){
+            if(conAciertos >= 5){
                 clearInterval(intervalAvion);
                 document.getElementById("fin").style.display = "block";
             }
